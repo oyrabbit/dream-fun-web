@@ -1,21 +1,15 @@
 <script setup lang="ts">
-  import { h, ref, defineAsyncComponent } from 'vue';
+  import { h, ref, defineAsyncComponent, onMounted } from 'vue';
   import { RouterLink } from 'vue-router';
   import type { MenuOption } from 'naive-ui';
   import { useAppStore } from '/@/store';
-  import { darkTheme } from 'naive-ui';
-  import { NIcon } from 'naive-ui';
-  import { HomeOutline as Home } from '@vicons/ionicons5';
+  import { darkTheme, NConfigProvider, GlobalThemeOverrides } from 'naive-ui';
   import Header from '/@/layout/components/header.vue';
-  // import type { GlobalTheme } from 'naive-ui';
-
-  // 导入logo
+  import { getAllCate } from '/@/api/home/index';
   import logo from '/@/assets/logo.png';
   import logoLight from '/@/assets/logo-light.png';
   import logoMini from '/@/assets/logo-mini.png';
 
-  // 导入组件
-  // const Header = defineAsyncComponent(() => import('/@/layout/components/header.vue'));
   const Main = defineAsyncComponent(() => import('/@/layout/components/main.vue'));
 
   // 设置主题
@@ -23,25 +17,31 @@
   const theme = computed(() => {
     return appStore.theme;
   });
+  const themeOverrides: GlobalThemeOverrides = {
+    common: {
+      primaryColor: '#2672fe',
+    },
+    Button: {
+      textColor: '#FF0000',
+    },
+  };
   const themeMenu = computed(() => {
     return appStore.theme === 'dark' ? darkTheme : null;
   });
 
   // 菜单栏图标处理
-  const renderIcon = (icon: Component) => {
-    return () => h(NIcon, null, { default: () => h(icon) });
+  const renderIcon = (icon: string) => {
+    return () =>
+      h('iconpark-icon', {
+        size: 22,
+        name: icon,
+      });
   };
 
   // 菜单栏标签处理
-  const renderMenuLabel = (option: MenuOption) => {
-    if ('href' in option) {
-      return h('a', { href: option.href, target: '_blank' }, option.label as string);
-    }
-    return option.label as string;
-  };
 
   // 菜单数据
-  const menuOptions: MenuOption[] = [
+  const menuOptions: Ref<MenuOption[]> = ref([
     {
       label: () =>
         h(
@@ -57,74 +57,49 @@
           { default: () => '首页' },
         ),
       key: 'home',
-      icon: renderIcon(Home),
+      icon: renderIcon('home'),
     },
-    {
-      label: '1973年的弹珠玩具',
-      key: 'pinball-1973',
-      disabled: true,
-      children: [
-        {
-          label: '鼠',
-          key: 'rat',
-        },
-      ],
-    },
-    {
-      label: '寻羊冒险记',
-      key: 'a-wild-sheep-chase',
-      disabled: true,
-    },
-    {
-      label: '舞，舞，舞',
-      key: 'dance-dance-dance',
-      children: [
-        {
-          type: 'group',
-          label: '人物',
-          key: 'people',
-          children: [
-            {
-              label: '叙事者',
-              key: 'narrator',
-            },
-            {
-              label: '羊男',
-              key: 'sheep-man',
-            },
-          ],
-        },
-        {
-          label: '饮品',
-          key: 'beverage',
-          children: [
-            {
-              label: '威士忌',
-              key: 'whisky',
-              href: 'https://baike.baidu.com/item/%E5%A8%81%E5%A3%AB%E5%BF%8C%E9%85%92/2959816?fromtitle=%E5%A8%81%E5%A3%AB%E5%BF%8C&fromid=573&fr=aladdin',
-            },
-          ],
-        },
-        {
-          label: '食物',
-          key: 'food',
-          children: [
-            {
-              label: '三明治',
-              key: 'sandwich',
-            },
-          ],
-        },
-        {
-          label: '过去增多，未来减少',
-          key: 'the-past-increases-the-future-recedes',
-        },
-      ],
-    },
-  ];
+  ]);
+
+  // 获取菜单数据
+  const getMenuData = async () => {
+    await getAllCate().then((res) => {
+      const data = res?.data;
+      // 获取所有大分类
+      const fCates = data?.filter((item: any, index) => data.findIndex((item1: any) => item?.f_id === item1?.f_id) === index);
+
+      fCates.forEach(async (item: any) => {
+        // 获取当前大分类中的小分类
+        const childrenCates = data
+          ?.filter((item1: any) => item?.f_id === item1?.f_id)
+          .map((item3: any) => {
+            return {
+              label: item3.name,
+              key: item3.name + '-' + item3.id,
+            };
+          });
+
+        menuOptions.value.push({
+          label: item?.f_name,
+          key: item?.f_name + '-' + item?.f_id,
+          icon: await renderIcon(item?.f_icon),
+          children: childrenCates,
+        });
+      });
+    });
+  };
+
+  onMounted(() => {
+    getMenuData();
+  });
 
   // 是否折叠
   const collapsed = ref(true);
+
+  // const handleUpdateValue = (key: string, item: MenuOption) => {
+  //   message.info('[onUpdate:value]: ' + JSON.stringify(key));
+  //   message.info('[onUpdate:value]: ' + JSON.stringify(item));
+  // };
 
   // logo展示控制
   const logoShow = computed(() => {
@@ -137,7 +112,7 @@
 </script>
 
 <template>
-  <n-config-provider :theme="themeMenu">
+  <n-config-provider :theme="themeMenu" :theme-overrides="themeOverrides">
     <n-space vertical>
       <n-layout has-sider class="w-screen h-screen bg-white dark:shadow-md" shadow="[4px_0_25px_0_#f3f3f3]">
         <n-layout-sider
@@ -154,13 +129,7 @@
             <img :src="logoShow" class="w-52 h-31" alt="" v-if="collapsed === false" />
             <img :src="logoMini" class="w-50px h-50px mt-5px" alt="" v-if="collapsed === true" />
           </div>
-          <n-menu
-            :collapsed="collapsed"
-            :collapsed-width="64"
-            :collapsed-icon-size="22"
-            :options="menuOptions"
-            :render-label="renderMenuLabel"
-          />
+          <n-menu :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" />
         </n-layout-sider>
         <n-layout>
           <Header />

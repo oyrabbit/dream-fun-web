@@ -48,15 +48,14 @@ const request = <T = any>(config: AxiosRequestConfig): Promise<T> => {
   const conf = config;
   return new Promise((resolve) => {
     service.request<any, AxiosResponse<IResponse>>(conf).then((res: AxiosResponse<IResponse>) => {
-      const {
-        data: { result },
-      } = res;
+      const result = res?.data || {};
       resolve(result as T);
     });
   });
 };
 
 export function get<T = any>(config: AxiosRequestConfig): Promise<T> {
+  console.log(request({ ...config, method: 'GET' }));
   return request({ ...config, method: 'GET' });
 }
 

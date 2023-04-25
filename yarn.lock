@@ -1504,6 +1504,11 @@
     fast-glob "^3.2.12"
     magic-string "^0.30.0"
 
+"@vicons/ionicons5@^0.12.0":
+  version "0.12.0"
+  resolved "https://registry.npmmirror.com/@vicons/ionicons5/-/ionicons5-0.12.0.tgz#c39fda04420dfae3b58053faf8aaf3555253299d"
+  integrity sha512-Iy1EUVRpX0WWxeu1VIReR1zsZLMc4fqpt223czR+Rpnrwu7pt46nbnC2ycO7ItI/uqDLJxnbcMC7FujKs9IfFA==
+
 "@vitejs/plugin-vue-jsx@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue-jsx/-/plugin-vue-jsx-3.0.1.tgz#4c088ce445e34ae27e78a66e6dbf2cc2e85f827d"
@@ -5513,6 +5518,11 @@ js-base64@^2.1.9:
   version "2.6.4"
   resolved "https://registry.npmmirror.com/js-base64/download/js-base64-2.6.4.tgz#f4e686c5de1ea1f867dbcad3d46d969428df98c4"
   integrity sha512-pZe//GGmwJndub7ZghVHz7vjb2LgC1m8B07Au3eYqeqv9emhESByMXxaEgkUkEqJe87oBbSniGYoQNIBklc7IQ==
+
+js-cookie@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.npmmirror.com/js-cookie/-/js-cookie-3.0.5.tgz#0b7e2fd0c01552c58ba86e0841f94dc2557dcdbc"
+  integrity sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==
 
 js-sdsl@^4.1.4:
   version "4.3.0"
