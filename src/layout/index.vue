@@ -1,8 +1,12 @@
 <script setup lang="ts">
   import { h, ref, defineAsyncComponent } from 'vue';
+  import { RouterLink } from 'vue-router';
   import type { MenuOption } from 'naive-ui';
   import { useAppStore } from '/@/store';
   import { darkTheme } from 'naive-ui';
+  import { NIcon } from 'naive-ui';
+  import { HomeOutline as Home } from '@vicons/ionicons5';
+  import Header from '/@/layout/components/header.vue';
   // import type { GlobalTheme } from 'naive-ui';
 
   // 导入logo
@@ -11,7 +15,7 @@
   import logoMini from '/@/assets/logo-mini.png';
 
   // 导入组件
-  const Header = defineAsyncComponent(() => import('/@/layout/components/header.vue'));
+  // const Header = defineAsyncComponent(() => import('/@/layout/components/header.vue'));
   const Main = defineAsyncComponent(() => import('/@/layout/components/main.vue'));
 
   // 设置主题
@@ -23,12 +27,37 @@
     return appStore.theme === 'dark' ? darkTheme : null;
   });
 
+  // 菜单栏图标处理
+  const renderIcon = (icon: Component) => {
+    return () => h(NIcon, null, { default: () => h(icon) });
+  };
+
+  // 菜单栏标签处理
+  const renderMenuLabel = (option: MenuOption) => {
+    if ('href' in option) {
+      return h('a', { href: option.href, target: '_blank' }, option.label as string);
+    }
+    return option.label as string;
+  };
+
   // 菜单数据
   const menuOptions: MenuOption[] = [
     {
-      label: '且听风吟',
+      label: () =>
+        h(
+          RouterLink,
+          {
+            to: {
+              name: 'home',
+              params: {
+                lang: 'zh-CN',
+              },
+            },
+          },
+          { default: () => '首页' },
+        ),
       key: 'hear-the-wind-sing',
-      href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
+      icon: renderIcon(Home),
     },
     {
       label: '1973年的弹珠玩具',
@@ -96,12 +125,6 @@
 
   // 是否折叠
   const collapsed = ref(true);
-  const renderMenuLabel = (option: MenuOption) => {
-    if ('href' in option) {
-      return h('a', { href: option.href, target: '_blank' }, option.label as string);
-    }
-    return option.label as string;
-  };
 
   // logo展示控制
   const logoShow = computed(() => {

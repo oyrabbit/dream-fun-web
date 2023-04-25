@@ -11,7 +11,7 @@ import 'nprogress/nprogress.css';
 const routes = [
   {
     path: '/',
-    name: '/',
+    name: 'home',
     component: () => import('/@/layout/index.vue'),
     redirect: '/home',
     meta: {

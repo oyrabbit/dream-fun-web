@@ -2488,6 +2488,11 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
+classnames@^2.2.6:
+  version "2.3.2"
+  resolved "https://registry.npmmirror.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
+  integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
+
 clean-css@^5.2.2:
   version "5.2.4"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-5.2.4.tgz#982b058f8581adb2ae062520808fb2429bd487a4"
@@ -8336,6 +8341,14 @@ tdesign-icons-vue-next@^0.1.7:
   integrity sha512-4BwPIo0K1EHPhy0YToc1I2GUnr6SLmiP6vxyNuC993+x0xv2C2jMXzOcDiJGX5QsgicJ7UEHMIfs+fvtDLgbng==
   dependencies:
     "@babel/runtime" "^7.16.3"
+
+tdesign-icons-vue@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.npmmirror.com/tdesign-icons-vue/-/tdesign-icons-vue-0.1.7.tgz#d60c0515418b95a62c69e8e5ac2780e5b6d6b374"
+  integrity sha512-klHu+hIJ54YwbfEpGhxyOA5z2cyyWRQzIFt61jWTDS8vJ1i2s+Tx99VvYAvCv9DbFUhu7R3QsNyR/iL0ryck7A==
+  dependencies:
+    "@babel/runtime" "^7.16.3"
+    classnames "^2.2.6"
 
 tdesign-vue-next@^1.3.0:
   version "1.3.0"
