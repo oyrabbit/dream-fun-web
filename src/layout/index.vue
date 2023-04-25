@@ -56,7 +56,7 @@
           },
           { default: () => '首页' },
         ),
-      key: 'hear-the-wind-sing',
+      key: 'home',
       icon: renderIcon(Home),
     },
     {
