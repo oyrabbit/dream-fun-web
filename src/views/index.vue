@@ -1,5 +1,5 @@
 <template>
-  <div class="dark:text-slate-400 h-screen"> 首页 </div>
+  <div class="dark:text-slate-400"> 首页 </div>
 </template>
 
 <script setup lang="ts"></script>

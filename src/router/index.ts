@@ -26,6 +26,14 @@ const routes = [
           title: '首页',
         },
       },
+      {
+        path: '/default',
+        name: 'default',
+        component: () => import('/@/views/default/index.vue'),
+        meta: {
+          title: '默认分类',
+        },
+      },
     ],
   },
 ];
@@ -35,6 +43,14 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory('fast-vue3'),
   routes,
+  scrollBehavior(to) {
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: 'smooth',
+      };
+    }
+  },
 });
 
 router.beforeEach(async (_to, _from, next) => {
