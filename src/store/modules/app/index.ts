@@ -6,11 +6,16 @@ export const useAppStore = defineStore(
   // 唯一ID
   'app',
   {
-    state: () => ({
+    state: (): any => ({
       title: 'FastVue3, 一个快速开箱即用的Vue3+Vite模板',
       h1: 'Vue3 + Vite3.x + TypeScript + Pinia大厂开发必备',
       theme: '',
       collapsed: false,
+      lastWebsite: {},
+      recommendWebsites: [],
+      searchSetValue: 'baidu',
+      recommendSetValue: true,
+      skinUrl: 'https://dream.orabbit.cn/FnZJ8-LDZow0qyDR1TfYyPm17ssW',
     }),
     getters: {},
     actions: {
@@ -29,11 +34,23 @@ export const useAppStore = defineStore(
         }
       },
     },
-    persist: {
-      key: 'theme-collapsed',
-      storage: localStorage,
-      paths: ['theme', 'collapsed'],
-    },
+    persist: [
+      {
+        key: 'appStore',
+        storage: localStorage,
+        paths: ['theme', 'collapsed', 'skinUrl'],
+      },
+      {
+        key: 'websiteSet',
+        storage: localStorage,
+        paths: ['searchSetValue', 'recommendSetValue'],
+      },
+      {
+        key: 'recommendWebsites',
+        storage: localStorage,
+        paths: ['lastWebsite', 'recommendWebsites'],
+      },
+    ],
   },
 );
 

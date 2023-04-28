@@ -1,8 +1,10 @@
 <script setup lang="ts">
-  import { onMounted, watch } from 'vue';
+  import { watchEffect } from 'vue';
   import { useRoute } from 'vue-router';
   import { getDefaultWebsite } from '/@/api/home/index';
   import { useAppStore } from '/@/store';
+
+  // import img1 from '/@/assets/images/background/1.png';
 
   const appStore = useAppStore();
   const theme = computed(() => {
@@ -10,15 +12,16 @@
   });
 
   const route = useRoute();
+  // const back = 'url(' + img1 + ')';
 
   const websiteData: Ref<any> = ref([]);
 
-  const getDefaultWebsiteData = async () => {
-    websiteData.value = [];
-    console.log(111);
+  const getDefaultWebsiteData = async (fid: number) => {
+    console.log(fid, 7898);
 
-    await getDefaultWebsite(Number(route.query.fid)).then((res) => {
+    await getDefaultWebsite(fid).then((res) => {
       const data = res?.data;
+      const websiteDataTemp: any[] = [];
       // 获取所有分类
       const cates = data
         ?.filter((item: any, index: number) => data.findIndex((item1: any) => item?.category_id === item1?.category_id) === index)
@@ -28,7 +31,7 @@
 
       // 建立树形结构
       cates?.forEach((item: any) => {
-        websiteData.value.push({
+        websiteDataTemp.push({
           id: item?.id,
           category: item?.name,
           websites: data
@@ -43,27 +46,33 @@
             }),
         });
       });
-      console.log(websiteData, 789);
+      websiteData.value = websiteDataTemp;
     });
   };
 
-  const handleClick = (url: string) => {
-    window.open('http://' + url, '_blank');
-  };
-  watch(route, () => {
-    getDefaultWebsiteData();
-  }),
-    {
-      deep: true,
-      immediate: true,
+  const handleClick = (info: any) => {
+    appStore.lastWebsite = {
+      name: info.name,
+      url: info.url,
     };
-  onMounted(() => {
-    getDefaultWebsiteData();
+    if (!appStore.recommendWebsites.find((item: any) => item?.name === info.name)) {
+      appStore.recommendWebsites.push({
+        name: info.name,
+        url: info.url,
+        count: 1,
+      });
+    } else {
+      appStore.recommendWebsites[appStore.recommendWebsites.findIndex((item: any) => item?.name === info.name)].count += 1;
+    }
+    window.open('http://' + info.url, '_blank');
+  };
+  watchEffect(() => {
+    getDefaultWebsiteData(Number(route.query.fid));
   });
 </script>
 
 <template>
-  <div class="px-20px py-20px">
+  <div class="default w-100% h-100% px-20px py-20px">
     <div class="mb-20px px-15px py-10px bg-white dark:bg-#18181c" border-rd="[10px]" v-for="item in websiteData" :key="item.id">
       <div class="text-16px font-600">{{ item.category }}</div>
       <div class="website-list px-20px py-15px">
@@ -76,7 +85,7 @@
           border-rd="[10px]"
           v-for="item1 in item.websites"
           :key="item1.id"
-          @click="handleClick(item1.url)"
+          @click="handleClick(item1)"
         >
           <div class="w-45px h-45px mr-15px px-10px py-10px">
             <img class="w-100%" border-rd="[10px]" :src="'https://api.iowen.cn/favicon/' + item1.url + '.png'" alt="" />
@@ -92,6 +101,13 @@
 </template>
 
 <style scoped lang="less">
+  .default {
+    position: relative;
+    // background-image: v-bind(back);
+    // background-repeat: no-repeat;
+    // background-position: center;
+  }
+
   .website-box {
     display: flex;
     align-items: center;

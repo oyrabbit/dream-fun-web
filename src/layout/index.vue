@@ -9,10 +9,13 @@
   import logo from '/@/assets/logo.png';
   import logoLight from '/@/assets/logo-light.png';
   import logoMini from '/@/assets/logo-mini.png';
+  import img1 from '/@/assets/images/background/1.png';
 
   const Main = defineAsyncComponent(() => import('/@/layout/components/main.vue'));
 
   const route = useRoute();
+
+  const back = 'url(' + img1 + ')';
 
   // 设置主题
   const appStore = useAppStore();
@@ -167,7 +170,7 @@
           </div>
           <n-menu :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" :value="selectedValue" />
         </n-layout-sider>
-        <n-layout>
+        <n-layout class="layout">
           <Header />
           <Main />
         </n-layout>
@@ -175,4 +178,10 @@
     </n-space>
   </n-config-provider>
 </template>
-<style scoped lang="less"></style>
+<style scoped lang="less">
+  .layout {
+    background-image: v-bind(back);
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+</style>

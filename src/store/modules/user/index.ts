@@ -1,21 +1,12 @@
 import { defineStore } from 'pinia';
-import { login as userLogin, logout as userLogout, getUserProfile, LoginData } from '/@/api/user/index';
+import { login as userLogin, getUserProfile, LoginData } from '/@/api/user/index';
 import { setToken, clearToken } from '/@/utils/auth';
 import { UserState } from './types';
 
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({
+    user_id: undefined,
     user_name: undefined,
-    avatar: undefined,
-    organization: undefined,
-    location: undefined,
-    email: undefined,
-    blogJuejin: undefined,
-    blogZhihu: undefined,
-    blogGithub: undefined,
-    profileBio: undefined,
-    devLanguages: undefined,
-    role: '',
   }),
   getters: {
     userProfile(state: UserState): UserState {
@@ -25,7 +16,7 @@ export const useUserStore = defineStore('user', {
   actions: {
     switchRoles() {
       return new Promise((resolve) => {
-        this.role = this.role === 'user' ? 'user' : 'admin';
+        // this.role = this.role === 'user' ? 'user' : 'admin';
         resolve(this.role);
       });
     },
@@ -49,15 +40,25 @@ export const useUserStore = defineStore('user', {
       if (token) {
         setToken(token);
       }
+      this.setInfo({
+        user_id: result?.id,
+        user_name: result?.data,
+      });
       return result;
     },
     // Logout
-    async logout() {
-      await userLogout();
+    logout() {
       this.resetInfo();
       clearToken();
       // 路由表重置
       // location.reload();
     },
   },
+  persist: [
+    {
+      key: 'userStore',
+      storage: localStorage,
+      paths: ['user_id', 'user_name'],
+    },
+  ],
 });

@@ -1,5 +1,7 @@
 <template>
-  <router-view />
+  <n-message-provider>
+    <content> <router-view /></content>
+  </n-message-provider>
 </template>
 <script setup lang="ts"></script>
 
