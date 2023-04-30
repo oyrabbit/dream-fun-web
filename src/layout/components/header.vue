@@ -371,7 +371,7 @@
   const showModal2 = ref(false);
 
   const cancelCallback2 = () => {
-    showModal.value = false;
+    showModal2.value = false;
     resetModel2();
   };
   const submitCallback2 = () => {

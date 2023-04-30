@@ -3,6 +3,7 @@ import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, Inte
 import { showMessage } from './status';
 import { IResponse } from './type';
 import { getToken } from '/@/utils/auth';
+import { close } from '/@/utils/nprogress';
 
 const service: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_API_BASEURL,
@@ -14,7 +15,7 @@ service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getToken();
     if (token) {
-      // config.headers.Authorization = `${TokenPrefix}${token}`
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -26,6 +27,7 @@ service.interceptors.request.use(
 // axios实例拦截响应
 service.interceptors.response.use(
   (response: AxiosResponse) => {
+    close();
     if (response.status === 200) {
       return response;
     }

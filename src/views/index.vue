@@ -1,7 +1,7 @@
 <template>
-  <div class="index flex flex-col items-center w-100% h-100% dark:text-slate-400">
+  <div class="index flex flex-col items-center w-100% dark:text-slate-400">
     <div class="search-container">
-      <div class="search-box bg-#d9d9d9">
+      <div class="search-box bg-#f8f8f8">
         <div class="left-icon">
           <iconpark-icon size="28" :name="searchWayList[appStore.searchSetValue]?.icon" />
         </div>
@@ -23,6 +23,7 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue';
   import { useAppStore } from '/@/store';
+  import { close } from '/@/utils/nprogress';
 
   const appStore = useAppStore();
 
@@ -84,11 +85,15 @@
     }
     window.open('http://' + info.url, '_blank');
   };
+  onMounted(() => {
+    close();
+  });
 </script>
 
 <style lang="less" scoped>
   .index {
     position: relative;
+    height: calc(100vh - 60px) !important;
     background-image: v-bind(back);
     background-repeat: no-repeat;
     background-position: center;
@@ -148,7 +153,7 @@
       justify-content: center;
       width: 65px;
       height: 65px;
-      background-color: rgb(255 255 255 / 60%);
+      background-color: rgb(255 255 255 / 80%);
       box-shadow: 0 0 8px 1px #ededed;
       border-radius: 20px;
 

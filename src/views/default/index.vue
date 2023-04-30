@@ -87,12 +87,12 @@
           :key="item1.id"
           @click="handleClick(item1)"
         >
-          <div class="w-45px h-45px mr-15px px-10px py-10px">
+          <div class="w-45px h-45px mr-12px px-10px py-10px">
             <img class="w-100%" border-rd="[10px]" :src="'https://api.iowen.cn/favicon/' + item1.url + '.png'" alt="" />
           </div>
           <div class="w-120px whitespace-nowrap overflow-hidden">
-            <div class="text-16px">{{ item1.name }}</div>
-            <div class="text-10px" text="[#707070]">{{ item1.description }}</div>
+            <div class="w-112px text-14px overflow-hidden">{{ item1.name }}</div>
+            <div class="text-10px" text="[#888888]">{{ item1.description }}</div>
           </div>
         </div>
       </div>
@@ -120,6 +120,7 @@
   .dark-box {
     box-shadow: 0 0 14px 2px #313131;
     border: 1px solid rgb(46 46 46);
+    color: #888;
 
     &:hover {
       background-color: #212121;

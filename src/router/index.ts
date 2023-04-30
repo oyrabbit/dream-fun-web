@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 // import routes from 'virtual:generated-pages';
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
+import { start } from '/@/utils/nprogress';
 
 // routes.push({
 //   path: '/',
@@ -34,6 +33,14 @@ const routes = [
           title: '默认分类',
         },
       },
+      {
+        path: '/custom',
+        name: 'custom',
+        component: () => import('/@/views/custom/index.vue'),
+        meta: {
+          title: '自定义网站',
+        },
+      },
     ],
   },
 ];
@@ -54,12 +61,10 @@ const router = createRouter({
 });
 
 router.beforeEach(async (_to, _from, next) => {
-  NProgress.start();
+  start();
   next();
 });
 
-router.afterEach((_to) => {
-  NProgress.done();
-});
+router.afterEach((_to) => {});
 
 export default router;
