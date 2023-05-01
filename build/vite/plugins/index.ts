@@ -24,7 +24,14 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
 
   const vitePlugins: (PluginOption | PluginOption[])[] = [
     // vue支持
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag === 'iconpark-icon',
+        },
+      },
+    }),
+
     // JSX支持
     vueJsx(),
     // setup语法糖组件名支持

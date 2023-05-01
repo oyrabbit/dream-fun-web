@@ -20,6 +20,7 @@ declare module '@vue/runtime-core' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip'];
     Header: typeof import('./../src/components/Header/index.vue')['default'];
     NAvatar: typeof import('naive-ui')['NAvatar'];
+    NBackTop: typeof import('naive-ui')['NBackTop'];
     NButton: typeof import('naive-ui')['NButton'];
     NCol: typeof import('naive-ui')['NCol'];
     NConfigProvider: typeof import('naive-ui')['NConfigProvider'];
@@ -27,6 +28,8 @@ declare module '@vue/runtime-core' {
     NDrawer: typeof import('naive-ui')['NDrawer'];
     NDrawerContent: typeof import('naive-ui')['NDrawerContent'];
     NDropdown: typeof import('naive-ui')['NDropdown'];
+    NEllipsis: typeof import('naive-ui')['NEllipsis'];
+    NEmpty: typeof import('naive-ui')['NEmpty'];
     NForm: typeof import('naive-ui')['NForm'];
     NFormItem: typeof import('naive-ui')['NFormItem'];
     NImage: typeof import('naive-ui')['NImage'];

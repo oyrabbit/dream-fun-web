@@ -27,9 +27,6 @@
     common: {
       primaryColor: '#2672fe',
     },
-    Button: {
-      textColor: '#FF0000',
-    },
   };
   const themeMenu = computed(() => {
     return appStore.theme === 'dark' ? darkTheme : null;
@@ -184,6 +181,7 @@
         <n-layout class="layout bg-#F6F6F6 dark:bg-#000000">
           <Header />
           <Main />
+          <n-back-top :right="30" />
         </n-layout>
       </n-layout>
     </n-space>

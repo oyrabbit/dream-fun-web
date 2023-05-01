@@ -2,7 +2,7 @@
   <n-layout-header class="header-back flex content-center justify-end sticky z-998 top-0 left-0 w-100% h-15 py-0">
     <el-tooltip :content="theme === 'light' ? '设置暗黑主题' : '设置明亮主题'">
       <el-button
-        class="nav-btn mr-3 mt-0.5"
+        class="nav-btn mr-3 mt-6px"
         :shape="'circle'"
         type="info"
         plain
@@ -16,12 +16,19 @@
     <iconpark-icon size="22" name="setting-one" class="mr-1" @click="setShow = true" />
     <n-divider vertical title-placement="center" />
     <n-dropdown trigger="hover" :options="options" @select="handleSelect" size="large">
-      <n-avatar size="small" :src="head" round class="ml-1 mr-20px" />
+      <n-avatar size="medium" src="http://dream.orabbit.cn/1.jpg" round class="ml-1 mr-20px" v-if="!isLog" />
+      <n-avatar size="medium" src="http://dream.orabbit.cn/4.jpg" round class="ml-1 mr-20px" v-if="isLog" />
     </n-dropdown>
 
     <div class="n-layout-header__border bg-#efeff5 dark:bg-#ffffff17"></div>
   </n-layout-header>
-  <n-modal v-model:show="showModal" preset="dialog" title="用户注册" @positive-click="submitCallback" @negative-click="cancelCallback">
+  <n-modal
+    v-model:show="appStore.registerModal"
+    preset="dialog"
+    title="用户注册"
+    @positive-click="submitCallback"
+    @negative-click="cancelCallback"
+  >
     <n-form ref="formRef" :model="model" :rules="rules" class="mt-20px">
       <n-form-item path="username" label="用户名">
         <n-input v-model:value="model.username" @keydown.enter.prevent placeholder="输入用户名" />
@@ -50,7 +57,13 @@
       <n-button :disabled="model.username === null" round type="primary" @click="handleValidateButtonClick"> 立即注册 </n-button>
     </template>
   </n-modal>
-  <n-modal v-model:show="showModal2" preset="dialog" title="用户登录" @positive-click="submitCallback2" @negative-click="cancelCallback2">
+  <n-modal
+    v-model:show="appStore.loginModal"
+    preset="dialog"
+    title="用户登录"
+    @positive-click="submitCallback2"
+    @negative-click="cancelCallback2"
+  >
     <n-form ref="formRef2" :model="model2" :rules="rules2" class="mt-20px">
       <n-form-item path="username" label="用户名">
         <n-input v-model:value="model2.username" @keydown.enter.prevent placeholder="输入用户名" />
@@ -60,8 +73,8 @@
       </n-form-item>
     </n-form>
     <template #action>
-      <n-button round type="primary" @click="cancelCallback2"> 取消 </n-button>
-      <n-button :disabled="model2.username === null" round type="primary" @click="handleValidateButtonClick2"> 立即登录 </n-button>
+      <n-button round type="info" @click="cancelCallback2"> 没有账号？点此注册 </n-button>
+      <n-button :disabled="model2.username === null" round type="info" @click="handleValidateButtonClick2"> 立即登录 </n-button>
     </template>
   </n-modal>
   <n-drawer v-model:show="setShow" :width="300">
@@ -77,18 +90,10 @@
       <n-switch v-model:value="appStore.recommendSetValue" @update:value="handleChange" :rail-style="railStyle" />
     </n-drawer-content>
   </n-drawer>
-  <n-drawer v-model:show="skinShow" :width="300">
+  <n-drawer v-model:show="skinShow" :width="320">
     <n-drawer-content title="皮肤设置" closable>
       <div class="mb-10px">当前皮肤</div>
       <n-image width="250" class="mb-10px" :src="appStore.skinUrl" />
-      <div class="my-10px">选择系统推荐皮肤</div>
-      <img
-        class="w-250px mb-10px cursor-pointer"
-        :src="item.url"
-        v-for="(item, index) in skinList"
-        :key="index"
-        @click="handleSkinClick(item.url)"
-      />
       <div class="my-10px">自定义皮肤</div>
       <n-upload
         :action="API_TARGET_URL + '/upload'"
@@ -98,8 +103,16 @@
         @finish="handleFinish"
         @on-error="handleError"
       >
-        <n-button type="primary">上传自定义图片</n-button>
+        <n-button type="info">上传自定义图片</n-button>
       </n-upload>
+      <div class="my-10px mt-20px">选择系统推荐皮肤</div>
+      <img
+        class="w-250px mb-10px cursor-pointer"
+        :src="item.url"
+        v-for="(item, index) in skinList"
+        :key="index"
+        @click="handleSkinClick(item.url)"
+      />
     </n-drawer-content>
   </n-drawer>
 </template>
@@ -113,7 +126,6 @@
   import { register } from '/@/api/user/index';
   import { isLogin, getToken } from '/@/utils/auth';
   import { API_TARGET_URL } from '../../../build/constant';
-  import head from '/@/assets/head.jpg';
 
   interface ModelType {
     username: string | null;
@@ -147,6 +159,9 @@
       });
     };
   };
+  const isLog = computed(() => {
+    return isLogin();
+  });
   const options = computed(() => {
     if (!isLogin()) {
       return [
@@ -179,9 +194,9 @@
 
   const handleSelect = (key: string | number) => {
     if (key === 'register') {
-      showModal.value = true;
+      appStore.registerModal = true;
     } else if (key === 'login') {
-      showModal2.value = true;
+      appStore.loginModal = true;
     } else if (key === 'logout') {
       userStore.logout();
       location.reload();
@@ -191,6 +206,21 @@
   const skinShow = ref(false);
 
   const skinList = [
+    {
+      url: 'https://dream.orabbit.cn/Fj3lKcsRh-vpkoP01uIbWB4BN-EB',
+    },
+    {
+      url: 'https://dream.orabbit.cn/Fn5GEToy5DzDYtdy5VDmP0f1C23n',
+    },
+    {
+      url: 'https://dream.orabbit.cn/Fow0Vwauh3SmWgy6wcP9p2IGEe3i',
+    },
+    {
+      url: 'https://dream.orabbit.cn/FgbVZMcfe0iLNvx5kXenOGO-V0J0',
+    },
+    {
+      url: 'https://dream.orabbit.cn/FvMANkRGxTzvhP9P-EwIx5iO24Pf',
+    },
     {
       url: 'https://dream.orabbit.cn/FnZJ8-LDZow0qyDR1TfYyPm17ssW',
     },
@@ -268,10 +298,8 @@
 
   // 注册弹窗
 
-  const showModal = ref(false);
-
   const cancelCallback = () => {
-    showModal.value = false;
+    appStore.registerModal = false;
     resetModel();
   };
   const submitCallback = () => {
@@ -317,8 +345,8 @@
           if (res?.status === 200) {
             message.success('注册成功！');
             resetModel();
-            showModal.value = false;
-            showModal2.value = true;
+            appStore.registerModal = false;
+            appStore.loginModal = true;
           } else {
             message.error(res?.message);
           }
@@ -368,11 +396,11 @@
   };
 
   // 登录弹窗
-  const showModal2 = ref(false);
 
   const cancelCallback2 = () => {
-    showModal2.value = false;
+    appStore.loginModal = false;
     resetModel2();
+    appStore.registerModal = true;
   };
   const submitCallback2 = () => {
     message.success('Submit');
@@ -404,7 +432,7 @@
             if (res?.status === 200) {
               message.success('登录成功！');
               resetModel2();
-              showModal2.value = false;
+              appStore.loginModal = false;
               location.reload();
             } else {
               message.error(res?.message);

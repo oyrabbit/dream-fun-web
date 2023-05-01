@@ -13,7 +13,7 @@
     </div>
     <div class="website-recommend" v-if="appStore.recommendSetValue">
       <div class="website-item" v-for="(item, index) in recommendWebsites" :key="index" @click="handleClick(item)">
-        <div class="website-box"><img :src="'https://api.iowen.cn/favicon/' + item.url + '.png'" alt="" /> </div>
+        <div class="website-box"><img :src="appStore.icoUrl + item.url + '.png'" alt="" /> </div>
         <div class="website-name">{{ item.name }}</div>
       </div>
     </div>
@@ -97,6 +97,8 @@
     background-image: v-bind(back);
     background-repeat: no-repeat;
     background-position: center;
+    background-size: cover;
+    // background-attachment: fixed;
   }
 
   .search-container {
@@ -139,10 +141,13 @@
     position: absolute;
     top: 350px;
     display: grid;
-    grid-gap: 25px 40px;
-    grid-template-columns: repeat(8, 65px);
+    grid-gap: 25px;
+    grid-template-columns: repeat(8, 85px);
 
     .website-item {
+      display: flex;
+      justify-content: center;
+      width: 85px;
       text-align: center;
       cursor: pointer;
     }
@@ -164,9 +169,13 @@
     }
 
     .website-name {
+      width: 100%;
       margin-top: 10px;
       color: #fff;
-      font-size: 15px;
+      font-size: 14px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 </style>

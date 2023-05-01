@@ -11,6 +11,7 @@
   } from '/@/api/home/index';
   import { FormInst, FormItemRule, useMessage, FormRules } from 'naive-ui';
   import { useAppStore, useUserStore } from '/@/store';
+  import { isLogin } from '/@/utils/auth';
 
   interface Model1Type {
     id: number | null;
@@ -41,15 +42,18 @@
     return appStore.theme;
   });
 
+  const isEmptyShow = ref(false);
+
   // 渲染分类和网站数据
   const cateList = ref<any>([]);
   const websitesData = ref<any>([]);
   const getCustomWebsiteData = async () => {
     await getUserCategory().then(async (res) => {
       const data = res?.data;
-      cateList.value = data.map((item: any) => {
+      cateList.value = data?.map((item: any) => {
         return { id: item?.id, name: item?.name };
       });
+      isEmptyShow.value = !cateList.value?.length;
     });
     await getUserWebsite().then((res1) => {
       websitesData.value = res1?.data;
@@ -67,7 +71,7 @@
         name: item?.name,
         websites: websitesData.value
           ?.filter((item1: any) => item1?.user_category_id === item?.id)
-          .map((item1: any) => {
+          ?.map((item1: any) => {
             return {
               id: item1?.user_website_id,
               name: item1?.user_website_name,
@@ -432,35 +436,44 @@
     showModal6.value = true;
     delWebsiteId.value = id;
   };
+
+  const handelDelBtn = () => {
+    isDel.value = !isDel.value;
+    isEdit.value = false;
+    isDel.value && message.info('进入删除模式');
+    !isDel.value && message.info('退出删除模式');
+    console.log(isDel.value, 777);
+  };
+  const handelEditBtn = () => {
+    isEdit.value = !isEdit.value;
+    isDel.value = false;
+    isEdit.value && message.info('进入编辑模式');
+    !isEdit.value && message.info('退出编辑模式');
+  };
+
+  const handleNodataClick = () => {
+    if (!isLogin()) {
+      appStore.loginModal = true;
+    } else {
+      handleCateAdd();
+    }
+  };
 </script>
 
 <template>
   <div class="custom w-100% h-100% px-20px py-20px">
-    <div class="w-100% flex justify-end">
-      <n-button
-        class="mr-20px mb-15px"
-        type="primary"
-        @click="
-          isDel = !isDel;
-          isEdit = false;
-        "
-      >
-        {{ isDel ? '退出删除' : '删除' }}</n-button
-      >
-      <n-button
-        class="mb-15px"
-        type="primary"
-        @click="
-          isEdit = !isEdit;
-          isDel = false;
-        "
-      >
-        {{ isEdit ? '退出编辑' : '编辑' }}</n-button
-      >
+    <div class="w-100% flex justify-end" v-if="websiteData?.length">
+      <n-button class="mr-20px mb-15px" type="info" @click="handelDelBtn"> {{ isDel ? '退出删除' : '删除模式' }}</n-button>
+      <n-button class="mb-15px" type="info" @click="handelEditBtn"> {{ isEdit ? '退出编辑' : '编辑模式' }}</n-button>
     </div>
+    <n-empty description="再怎么找也没有啦" size="large" class="mt-250px" v-if="isEmptyShow">
+      <template #extra>
+        <n-button size="large" type="info" @click="handleNodataClick"> 点击这里添加分类 </n-button>
+      </template>
+    </n-empty>
     <div class="mb-20px px-15px py-10px bg-white dark:bg-#18181c" border-rd="[10px]" v-for="item in websiteData" :key="item.id">
       <div class="flex justify-between h-22px">
-        <div class="text-16px font-600">{{ item?.name }}</div>
+        <n-ellipsis style="max-width: 500px" class="text-16px font-600">{{ item?.name }}</n-ellipsis>
         <div>
           <iconpark-icon size="22" name="delete" class="ml-6px cursor-pointer" v-if="isDel" @click="handleCateDel(item?.id)" />
           <iconpark-icon size="22" name="file-addition" class="ml-10px cursor-pointer" v-if="isEdit" @click="handleWebsiteAdd(item?.id)" />
@@ -476,7 +489,9 @@
       </div>
 
       <div class="website-list px-20px py-15px pt-20px">
-        <div v-if="!item.websites.length">该分类下暂无网站</div>
+        <div class="h-36px lh-36px whitespace-nowrap op-60" v-if="!item?.websites?.length"
+          >该分类下暂无网站，请进入编辑模式后，点击该分类卡片右上角添加网站。</div
+        >
         <div
           :class="{
             'website-box': true,
@@ -484,16 +499,24 @@
             'dark-box': theme === 'dark',
           }"
           border-rd="[10px]"
-          v-for="item1 in item.websites"
-          :key="item1.id"
+          v-for="item1 in item?.websites"
+          :key="item1?.id"
           @click="handleClick(item1, item)"
         >
           <div class="w-22px h-22px mr-10px">
-            <img class="w-100%" border-rd="[50%]" :src="'https://api.iowen.cn/favicon/' + item1.url + '.png'" alt="" />
+            <img class="w-100%" border-rd="[50%]" :src="appStore.icoUrl + item1?.url + '.png'" alt="" />
           </div>
-          <div class="w-112px whitespace-nowrap overflow-hidden">
-            <div class="text-14px">{{ item1.name }}</div>
-          </div>
+
+          <n-ellipsis
+            style="max-width: 120px"
+            class="w-120px text-14px whitespace-nowrap overflow-hidden text-ellipsis"
+            v-if="isEdit || isDel"
+            >{{ item1?.name }}</n-ellipsis
+          >
+          <n-ellipsis style="max-width: 142px" class="w-142px text-14px whitespace-nowrap overflow-hidden text-ellipsis" v-else>{{
+            item1?.name
+          }}</n-ellipsis>
+
           <iconpark-icon size="22" name="file-editing-one" class="ml-6px" v-if="isEdit" />
           <iconpark-icon size="22" name="delete" class="ml-6px" v-if="isDel" />
         </div>
@@ -509,8 +532,8 @@
       </n-form-item>
     </n-form>
     <template #action>
-      <n-button round type="primary" @click="cancelCallback1"> 算了 </n-button>
-      <n-button :disabled="model1.name === null" round type="primary" @click="handleValidateButtonClick1"> 立即修改 </n-button>
+      <n-button round type="info" @click="cancelCallback1"> 算了 </n-button>
+      <n-button :disabled="model1.name === null" round type="info" @click="handleValidateButtonClick1"> 立即修改 </n-button>
     </template>
   </n-modal>
   <n-modal v-model:show="showModal2" preset="dialog" title="添加分类" @negative-click="cancelCallback2">
@@ -520,8 +543,8 @@
       </n-form-item>
     </n-form>
     <template #action>
-      <n-button round type="primary" @click="cancelCallback2"> 算了 </n-button>
-      <n-button :disabled="model2.name === null" round type="primary" @click="handleValidateButtonClick2"> 立即添加 </n-button>
+      <n-button round type="info" @click="cancelCallback2"> 算了 </n-button>
+      <n-button :disabled="model2.name === null" round type="info" @click="handleValidateButtonClick2"> 立即添加 </n-button>
     </template>
   </n-modal>
 
@@ -548,8 +571,8 @@
       </n-form-item>
     </n-form>
     <template #action>
-      <n-button round type="primary" @click="cancelCallback4"> 算了 </n-button>
-      <n-button :disabled="model4.name === null" round type="primary" @click="handleValidateButtonClick4"> 立即添加 </n-button>
+      <n-button round type="info" @click="cancelCallback4"> 算了 </n-button>
+      <n-button :disabled="model4.name === null" round type="info" @click="handleValidateButtonClick4"> 立即添加 </n-button>
     </template>
   </n-modal>
   <n-modal v-model:show="showModal5" preset="dialog" title="编辑网站" @negative-click="cancelCallback5">
@@ -562,8 +585,8 @@
       </n-form-item>
     </n-form>
     <template #action>
-      <n-button round type="primary" @click="cancelCallback5"> 算了 </n-button>
-      <n-button :disabled="model5.name === null" round type="primary" @click="handleValidateButtonClick5"> 立即编辑 </n-button>
+      <n-button round type="info" @click="cancelCallback5"> 算了 </n-button>
+      <n-button :disabled="model5.name === null" round type="info" @click="handleValidateButtonClick5"> 立即编辑 </n-button>
     </template>
   </n-modal>
   <n-modal
@@ -593,6 +616,9 @@
     height: 36px;
     padding: 0 0 0 10px;
     cursor: pointer;
+    // overflow: hidden;
+    // white-space: nowrap;
+    // text-overflow: ellipsis;
   }
 
   .dark-box {
