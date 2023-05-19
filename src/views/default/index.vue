@@ -232,7 +232,7 @@
     display: flex;
     align-items: center;
     position: relative;
-    width: 220px;
+    width: 238px;
     height: 68px;
     padding: 0 5px 0 15px;
     cursor: pointer;
@@ -271,7 +271,7 @@
 
   .website-list {
     display: grid;
-    grid-gap: 25px 40px;
+    grid-gap: 25px 50px;
     grid-template-columns: repeat(auto-fill, 210px);
   }
 </style>

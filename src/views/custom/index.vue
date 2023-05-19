@@ -517,8 +517,8 @@
             item1?.name
           }}</n-ellipsis>
 
-          <iconpark-icon size="22" name="file-editing-one" class="ml-6px" v-if="isEdit" />
-          <iconpark-icon size="22" name="delete" class="ml-6px" v-if="isDel" />
+          <iconpark-icon size="22" name="file-editing-one" class="" v-if="isEdit" />
+          <iconpark-icon size="22" name="delete" class="" v-if="isDel" />
         </div>
       </div>
     </div>
@@ -641,7 +641,7 @@
 
   .website-list {
     display: grid;
-    grid-gap: 25px 10px;
+    grid-gap: 25px 8px;
     grid-template-columns: repeat(auto-fill, 190px);
   }
 </style>

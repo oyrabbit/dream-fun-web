@@ -140,16 +140,24 @@
   .website-recommend {
     position: absolute;
     top: 350px;
-    display: grid;
-    grid-gap: 25px;
-    grid-template-columns: repeat(8, 85px);
+    display: flex;
+    // display: grid;
+    // grid-gap: 25px;
+    // grid-template-columns: repeat(8, 85px);
 
     .website-item {
       display: flex;
       justify-content: center;
       width: 85px;
+      margin-right: 25px;
       text-align: center;
       cursor: pointer;
+      font-weight: bold;
+      -webkit-text-stroke: 0.2px #242424;
+
+      &:last-child {
+        margin-right: 0;
+      }
     }
 
     .website-box {

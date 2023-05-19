@@ -178,7 +178,7 @@
           </div>
           <n-menu :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" :value="selectedValue" />
         </n-layout-sider>
-        <n-layout class="layout bg-#F6F6F6 dark:bg-#000000">
+        <n-layout class="layout bg-#f0f0f0 dark:bg-#000000">
           <Header />
           <Main />
           <n-back-top :right="30" />
@@ -187,4 +187,5 @@
     </n-space>
   </n-config-provider>
 </template>
+
 <style scoped lang="less"></style>
