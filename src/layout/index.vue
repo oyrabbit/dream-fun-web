@@ -19,6 +19,7 @@
   const theme = computed(() => {
     return appStore.theme;
   });
+
   // 是否折叠
   const collapsed = computed(() => {
     return appStore.collapsed;
